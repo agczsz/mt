@@ -1,0 +1,61 @@
+{
+    "log": {
+        "access": "/var/log/v2ray/access.log",
+        "error": "/var/log/v2ray/error.log",
+        "loglevel": "warning"
+    },
+    "inbound": {
+        "port": 9487,
+        "protocol": "vmess",
+        "settings": {
+            "clients": [{
+                "id": "941b5e6c-cefc-4c1b-b533-7f72c06b7d3c",
+                "level": 1,
+                "alterId": 0
+            }]
+        },
+        "streamSettings": {
+            "network": "tcp"
+        }
+    },
+    "outbound": {
+        "protocol": "freedom",
+        "settings": {}
+    },
+    "inboundDetour": [
+        {
+            "tag": "tg-in",
+            "listen": "0.0.0.0",
+            "port": 9453,
+            "protocol": "mtproto",
+            "settings": {
+                "users": [{
+                    "secret": "89660732d0dbbff9e652fe2bf8f50186"
+                }]
+            }
+        }
+    ],
+    "outboundDetour": [{
+        "tag": "blocked",
+        "protocol": "blackhole",
+        "settings": {}
+    }, {
+        "tag": "tg-out",
+        "protocol": "mtproto",
+        "settings": {}
+    }],
+    "routing": {
+        "strategy": "rules",
+        "settings": {
+            "rules": [{
+                "outboundTag": "blocked",
+                "type": "field",
+                "ip": ["geoip:private"]
+            }, {
+                "outboundTag": "tg-out",
+                "type": "field",
+                "inboundTag": ["tg-in"]
+            }]
+        }
+    }
+}
